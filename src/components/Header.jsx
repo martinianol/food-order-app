@@ -1,5 +1,15 @@
-const Header = () => {
-    return <header>I'm the Header</header>
-}
+import logoImg from "../assets/logo.jpg"
 
-export default Header
+const Header = () => {
+  return (
+    <header id="main-header">
+      <div id="title">
+        <img src={logoImg} alt="App Logo"/>
+        <h1>ReactFood</h1>
+      </div>
+      <button className="text-button">Cart (3)</button>
+    </header>
+  );
+};
+
+export default Header;
