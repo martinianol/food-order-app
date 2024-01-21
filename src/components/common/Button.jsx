@@ -1,9 +1,12 @@
-const Button = ({ children, textOnly, className }) => {
+const Button = ({ children, textOnly, className, ...props }) => {
   let cssClasses = textOnly ? "text-button" : "button";
-  cssClasses +=  " " + className;
-  console.log("cssClasses", cssClasses)
+  cssClasses += " " + className;
 
-  return <button className={cssClasses}>{children}</button>;
+  return (
+    <button className={cssClasses} {...props}>
+      {children}
+    </button>
+  );
 };
 
 export default Button;

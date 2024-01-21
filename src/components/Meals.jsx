@@ -7,7 +7,6 @@ const Meals = () => {
   const [errorData, setErrorData] = useState(false);
 
   useEffect(() => {
-    console.log("I will fetch the meals...");
     const getData = async () => {
       const response = await fetch("http://localhost:3000/meals");
       if (response.ok) {

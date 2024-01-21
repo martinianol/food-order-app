@@ -8,7 +8,9 @@ const Header = () => {
         <img src={logoImg} alt="App Logo" />
         <h1>ReactFood</h1>
       </div>
-      <Button textOnly>Cart (3)</Button>
+      <nav>
+        <Button textOnly>Cart (3)</Button>
+      </nav>
     </header>
   );
 };
