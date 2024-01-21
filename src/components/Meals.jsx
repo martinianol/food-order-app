@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import Meal from "./Meal";
+import Meal from "./MealItem";
 
 const Meals = () => {
   const [meals, setMeals] = useState([]);
@@ -19,11 +19,11 @@ const Meals = () => {
     };
     getData();
   }, []);
-  console.log(meals);
+
   return (
     <section id="meals">
       {meals.map((meal) => (
-        <Meal key={meal.id} />
+        <Meal key={meal.id} mealData={meal} />
       ))}
     </section>
   );
