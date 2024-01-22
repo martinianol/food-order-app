@@ -9,7 +9,7 @@ import { calculateCartTotal } from "../utils/calculateCartTotal";
 
 const Cart = () => {
   const { items, addItem, removeItem } = useContext(CartContext);
-  const { userProgress, showCheckout, hideCart } =
+  const { userProgress, showCheckout, hideModal } =
     useContext(UserProgressContext);
   const cartTotal = calculateCartTotal(items);
 
@@ -32,10 +32,12 @@ const Cart = () => {
       </ul>
       <p className="cart-total">{currencyFormatting.format(cartTotal)}</p>
       <p className="modal-actions">
-        <Button textOnly onClick={hideCart}>
+        <Button textOnly onClick={hideModal}>
           Close
         </Button>
-        <Button onClick={handleGoToCheckout}>Go to Checkout</Button>
+        {items.length > 0 && (
+          <Button onClick={handleGoToCheckout}>Go to Checkout</Button>
+        )}
       </p>
     </Modal>
   );

@@ -4,11 +4,11 @@ const CartItem = ({ item, onDecreaseQuantity, onIncreaseQuantity }) => {
       <p>
         {item.name} - {item.quantity} x {item.price}
       </p>
-      <div className="cart-item-actions">
+      <p className="cart-item-actions">
         <button onClick={onDecreaseQuantity}>-</button>
         <span>{item.quantity}</span>
         <button onClick={onIncreaseQuantity}>+</button>
-      </div>
+      </p>
     </li>
   );
 };

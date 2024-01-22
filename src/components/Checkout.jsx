@@ -30,9 +30,10 @@ const INITIAL_FORM_DATA = {
   },
 };
 
-const Checkout = ({onSubmit }) => {
+const Checkout = ({ onSubmit }) => {
   const { items } = useContext(CartContext);
-  const { userProgress, hideCheckout, showFinal } = useContext(UserProgressContext);
+  const { userProgress, hideModal, showFinal } =
+    useContext(UserProgressContext);
   const cartTotal = calculateCartTotal(items);
 
   const handleSubmit = (e) => {
@@ -43,7 +44,7 @@ const Checkout = ({onSubmit }) => {
       quantity: item.quantity,
     }));
     onSubmit(formData, orderInfo);
-    showFinal()
+    showFinal();
   };
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
@@ -58,7 +59,7 @@ const Checkout = ({onSubmit }) => {
   };
 
   return (
-    <Modal open={userProgress === "checkout"} >
+    <Modal open={userProgress === "checkout"}>
       <h2>Checkout</h2>
       <p>Total Amount {currencyFormatting.format(cartTotal)}</p>
       <form onSubmit={handleSubmit} className="control">
@@ -96,7 +97,7 @@ const Checkout = ({onSubmit }) => {
         </div>
 
         <p className="modal-actions">
-          <Button type="button" textOnly onClick={hideCheckout}>
+          <Button type="button" textOnly onClick={hideModal}>
             Close
           </Button>
           <Button>Submit Order</Button>

@@ -1,43 +1,37 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import Header from "./components/Header";
 import Meals from "./components/Meals";
 import { CartContextProvider } from "./store/CartContext";
-import UserProgressContext, {
-  UserContextProvider,
-} from "./store/UserProgressContext";
+import { UserProgressContextProvider } from "./store/UserProgressContext";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
-import Final from "./components/Final"
+import Final from "./components/Final";
 
 function App() {
-  const [status, setStatus] = useState()
-  const { showFinal } = useContext(UserProgressContext);
+  const [status, setStatus] = useState();
   const handleOrderSubmit = (customerInfo, orderInfo) => {
     console.log("I will submit the order in App.jsx");
     console.log("customerInfo", customerInfo);
     console.log("orderInfo", orderInfo);
     // TODO - SEND ORDER TO BACKEND
 
-    //setOpenCheckout(false);
-    setStatus("submitting")
+    setStatus("submitting");
     setTimeout(() => {
       setStatus("success");
     }, 3000);
   };
 
   return (
-    <CartContextProvider>
-      <UserContextProvider>
+    <UserProgressContextProvider>
+      <CartContextProvider>
         <Header />
-        <main>
-          <Meals />
-        </main>
+        <Meals />
         <Cart />
         <Checkout onSubmit={handleOrderSubmit} />
-        <Final status={status}/>
-      </UserContextProvider>
-    </CartContextProvider>
+        <Final status={status} />
+      </CartContextProvider>
+    </UserProgressContextProvider>
   );
 }
 

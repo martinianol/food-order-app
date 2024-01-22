@@ -3,23 +3,16 @@ import { createContext, useState } from "react";
 const UserProgressContext = createContext({
   progress: null, // "cart" "checkout" "final"
   showCart: () => {},
-  hideCart: () => {},
-  showCheckout: () => {},
-  hideCheckout: () => {},
-  showFinal: () => {},
-  hideFinal: () => {},
+  hideModal: () => {},
 });
 
-export const UserContextProvider = ({ children }) => {
+export const UserProgressContextProvider = ({ children }) => {
   const [userProgress, setUserProgress] = useState(null);
 
   const showCart = () => setUserProgress("cart");
   const hideModal = () => setUserProgress(null);
   const showCheckout = () => setUserProgress("checkout");
-  const showFinal = () => {
-    console.log("I will change user progress to final");
-    setUserProgress("final");
-  };
+  const showFinal = () => setUserProgress("final");
 
   const userProgressContext = {
     userProgress,
