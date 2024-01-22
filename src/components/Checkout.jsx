@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import Modal from "./common/Modal";
 import CartContext from "../store/CartContext";
+import UserProgressContext from "../store/UserProgressContext";
 import Button from "./common/Button";
 import Input from "./common/Input";
 import { currencyFormatting } from "../utils/formatting";
@@ -29,8 +30,9 @@ const INITIAL_FORM_DATA = {
   },
 };
 
-const Checkout = ({ open, onClose, onSubmit }) => {
+const Checkout = ({onSubmit }) => {
   const { items } = useContext(CartContext);
+  const { userProgress, hideCheckout, showFinal } = useContext(UserProgressContext);
   const cartTotal = calculateCartTotal(items);
 
   const handleSubmit = (e) => {
@@ -41,6 +43,7 @@ const Checkout = ({ open, onClose, onSubmit }) => {
       quantity: item.quantity,
     }));
     onSubmit(formData, orderInfo);
+    showFinal()
   };
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
@@ -55,7 +58,7 @@ const Checkout = ({ open, onClose, onSubmit }) => {
   };
 
   return (
-    <Modal open={open}>
+    <Modal open={userProgress === "checkout"} >
       <h2>Checkout</h2>
       <p>Total Amount {currencyFormatting.format(cartTotal)}</p>
       <form onSubmit={handleSubmit} className="control">
@@ -93,7 +96,7 @@ const Checkout = ({ open, onClose, onSubmit }) => {
         </div>
 
         <p className="modal-actions">
-          <Button type="button" textOnly onClick={onClose}>
+          <Button type="button" textOnly onClick={hideCheckout}>
             Close
           </Button>
           <Button>Submit Order</Button>
