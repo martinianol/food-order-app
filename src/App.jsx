@@ -23,9 +23,17 @@ function App() {
   };
 
   const handleGoToCheckout = () => {
-    handleCloseCart()
-    setOpenCheckout(true)
-  }
+    handleCloseCart();
+    setOpenCheckout(true);
+  };
+
+  const handleOrderSubmit = (customerInfo, orderInfo) => {
+    console.log("I will submit the order in App.jsx");
+    console.log("customerInfo", customerInfo);
+    console.log("orderInfo", orderInfo);
+    // TODO - SEND ORDER TO BACKEND
+    setOpenCheckout(false)
+  };
 
   return (
     <CartContextProvider>
@@ -33,8 +41,17 @@ function App() {
       <main>
         <Meals />
       </main>
-      <Cart open={openCart} onClose={handleCloseCart} onGoToCheckout={handleGoToCheckout}/>
-      <Checkout open={openCheckout} onClose={handleCloseCheckout} total/>
+      <Cart
+        open={openCart}
+        onClose={handleCloseCart}
+        onGoToCheckout={handleGoToCheckout}
+      />
+      <Checkout
+        open={openCheckout}
+        onClose={handleCloseCheckout}
+        total
+        onSubmit={handleOrderSubmit}
+      />
     </CartContextProvider>
   );
 }

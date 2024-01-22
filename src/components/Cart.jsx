@@ -4,12 +4,11 @@ import CartContext from "../store/CartContext";
 import CartItem from "./CartItem";
 import Button from "./common/Button";
 import { currencyFormatting } from "../utils/formatting";
+import { calculateCartTotal } from "../utils/calculateCartTotal";
 
 const Cart = ({ open, onClose, onGoToCheckout }) => {
   const { items, addItem, removeItem } = useContext(CartContext);
-  const cartTotal = items.reduce((totalPrice, item) => {
-    return totalPrice + item.quantity * item.price;
-  }, 0);
+  const cartTotal = calculateCartTotal(items);
 
   return (
     <Modal open={open} className="cart">
