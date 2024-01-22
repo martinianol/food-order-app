@@ -6,7 +6,7 @@ import Button from "./common/Button";
 import { currencyFormatting } from "../utils/formatting";
 
 const Cart = ({ open, onClose }) => {
-  const { items } = useContext(CartContext);
+  const { items, addItem, removeItem } = useContext(CartContext);
   const totalValue = items.reduce((accValue, item) => {
     return accValue + item.quantity * item.price;
   }, 0);
@@ -16,12 +16,19 @@ const Cart = ({ open, onClose }) => {
       <h2>Your Cart</h2>
       <ul>
         {items.map((item) => (
-          <CartItem key={item.id} item={item} />
+          <CartItem
+            key={item.id}
+            item={item}
+            onIncreaseQuantity={() => addItem(item)}
+            onDecreaseQuantity={() => removeItem(item.id)}
+          />
         ))}
       </ul>
       <div className="cart-total">{currencyFormatting.format(totalValue)}</div>
       <div className="modal-actions">
-        <Button textOnly onClick={onClose}>Close</Button>
+        <Button textOnly onClick={onClose}>
+          Close
+        </Button>
         <Button>Go to Checkout </Button>
       </div>
     </Modal>
