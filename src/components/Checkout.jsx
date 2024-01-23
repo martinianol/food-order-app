@@ -38,7 +38,7 @@ const Checkout = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //TODO - VALIDATION
+    //TODO - CUSTOM VALIDATION
     const orderInfo = items.map((item) => ({
       id: item.id,
       quantity: item.quantity,
@@ -58,27 +58,39 @@ const Checkout = ({ onSubmit }) => {
     });
   };
 
+  const handleCloseCheckout = () => {
+    hideModal();
+  };
+
+  const isThisModal = userProgress === "checkout";
+
   return (
-    <Modal open={userProgress === "checkout"}>
-      <h2>Checkout</h2>
-      <p>Total Amount {currencyFormatting.format(cartTotal)}</p>
+    <Modal
+      open={isThisModal}
+      onClose={isThisModal ? handleCloseCheckout : null}
+    >
       <form onSubmit={handleSubmit} className="control">
+        <h2>Checkout</h2>
+        <p>Total Amount {currencyFormatting.format(cartTotal)}</p>
         <Input
           id="fullName"
           label="Full Name"
           type="text"
+          required
           onInputChange={handleInputChange}
         />
         <Input
           id="email"
           label="E-Mail Address"
           type="email"
+          required
           onInputChange={handleInputChange}
         />
         <Input
           id="street"
           label="Street"
           type="text"
+          required
           onInputChange={handleInputChange}
         />
         <div className="control-row">
@@ -86,18 +98,20 @@ const Checkout = ({ onSubmit }) => {
             id="postalCode"
             label="Postal Code"
             type="text"
+            required
             onInputChange={handleInputChange}
           />
           <Input
             id="city"
             label="City"
             type="text"
+            required
             onInputChange={handleInputChange}
           />
         </div>
 
         <p className="modal-actions">
-          <Button type="button" textOnly onClick={hideModal}>
+          <Button type="button" textOnly onClick={handleCloseCheckout}>
             Close
           </Button>
           <Button>Submit Order</Button>
