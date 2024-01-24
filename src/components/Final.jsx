@@ -15,7 +15,7 @@ const Final = ({ status }) => {
   }, [status]);
 
   return (
-    <Modal open={userProgress === "final"}>
+    <Modal open={userProgress === "final"} onClose={hideModal}>
       <h2>{status}</h2>
     </Modal>
   );

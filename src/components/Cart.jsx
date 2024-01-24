@@ -17,8 +17,18 @@ const Cart = () => {
     showCheckout();
   };
 
+  const handleCloseCart = () => {
+    hideModal();
+  };
+
+  const isThisModal = userProgress === "cart";
+
   return (
-    <Modal open={userProgress === "cart"} className="cart">
+    <Modal
+      open={isThisModal}
+      className="cart"
+      onClose={isThisModal ? handleCloseCart : null}
+    >
       <h2>Your Cart</h2>
       <ul>
         {items.map((item) => (
@@ -32,7 +42,7 @@ const Cart = () => {
       </ul>
       <p className="cart-total">{currencyFormatting.format(cartTotal)}</p>
       <p className="modal-actions">
-        <Button textOnly onClick={hideModal}>
+        <Button textOnly onClick={handleCloseCart}>
           Close
         </Button>
         {items.length > 0 && (
