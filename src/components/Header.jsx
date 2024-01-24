@@ -7,11 +7,15 @@ import Button from "./common/Button";
 
 const Header = () => {
   const { items } = useContext(CartContext);
-  const { showCart } = useContext(UserProgressContext);
+  const { showModal } = useContext(UserProgressContext);
 
   const totalCartItems = items.reduce((totalNumberOfItems, item) => {
     return totalNumberOfItems + item.quantity;
   }, 0);
+
+  const handleShowCart = () => {
+    showModal("cart")
+  }
 
   return (
     <header id="main-header">
@@ -20,7 +24,7 @@ const Header = () => {
         <h1>ReactFood</h1>
       </div>
       <nav>
-        <Button textOnly onClick={showCart}>
+        <Button textOnly onClick={handleShowCart}>
           Cart ({totalCartItems})
         </Button>
       </nav>

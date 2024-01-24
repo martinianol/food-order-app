@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useCallback } from "react";
 import Modal from "./common/Modal";
 import CartContext from "../store/CartContext";
 import UserProgressContext from "../store/UserProgressContext";
@@ -32,19 +32,34 @@ const INITIAL_FORM_DATA = {
 
 const Checkout = ({ onSubmit }) => {
   const { items } = useContext(CartContext);
-  const { userProgress, hideModal, showFinal } =
+  const { userProgress, hideModal, showModal, PROGRESS_OPTIONS } =
     useContext(UserProgressContext);
   const cartTotal = calculateCartTotal(items);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     //TODO - CUSTOM VALIDATION
     const orderInfo = items.map((item) => ({
       id: item.id,
       quantity: item.quantity,
     }));
-    onSubmit(formData, orderInfo);
-    showFinal();
+
+    const payload = {
+      customer: formData,
+      order: orderInfo,
+    };
+
+    showModal(PROGRESS_OPTIONS["placing-order"])
+    const response = await fetch("http://localhost:3000/orders", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      showModal(PROGRESS_OPTIONS.final)
+    } else {
+      showModal(PROGRESS_OPTIONS.error)
+    }
   };
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);

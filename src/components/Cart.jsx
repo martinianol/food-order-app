@@ -9,12 +9,12 @@ import { calculateCartTotal } from "../utils/calculateCartTotal";
 
 const Cart = () => {
   const { items, addItem, removeItem } = useContext(CartContext);
-  const { userProgress, showCheckout, hideModal } =
+  const { userProgress, showModal, hideModal } =
     useContext(UserProgressContext);
   const cartTotal = calculateCartTotal(items);
 
   const handleGoToCheckout = () => {
-    showCheckout();
+    showModal("checkout");
   };
 
   const handleCloseCart = () => {
