@@ -54,6 +54,7 @@ const cartReducer = (state, action) => {
 
   if (action.type === "CLEAR_CART") {
     return {
+      ...state,
       items: [],
     };
   }
