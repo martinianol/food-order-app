@@ -19,20 +19,30 @@ const useHttp = (url, config, initialData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendRequest = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const resData = await sendHttpRequest(url, config);
-      setData(resData);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [url, config]);
+  const clearData = () => {
+    setData(initialData)
+  }
+
+  const sendRequest = useCallback(
+    async (payload) => {
+      setIsLoading(true);
+      try {
+        const resData = await sendHttpRequest(url, {
+          ...config,
+          body: JSON.stringify(payload),
+        });
+        setData(resData);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [url, config]
+  );
 
   useEffect(() => {
-    if (config && (config.method === "GET" || !config.method) || !config) {
+    if ((config && (config.method === "GET" || !config.method)) || !config) {
       sendRequest();
     }
   }, [sendRequest, config]);
@@ -42,6 +52,7 @@ const useHttp = (url, config, initialData) => {
     isLoading,
     error,
     sendRequest,
+    clearData
   };
 };
 

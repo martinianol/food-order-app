@@ -1,9 +1,11 @@
-import { useContext, useState, useCallback } from "react";
+import { useContext, useState } from "react";
+import useHttp from "../hooks/useHttp";
 import Modal from "./common/Modal";
 import CartContext from "../store/CartContext";
 import UserProgressContext from "../store/UserProgressContext";
 import Button from "./common/Button";
 import Input from "./common/Input";
+import Error from "./Error";
 import { currencyFormatting } from "../utils/formatting";
 import { calculateCartTotal } from "../utils/calculateCartTotal";
 
@@ -30,16 +32,29 @@ const INITIAL_FORM_DATA = {
   },
 };
 
+const requestConfig = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
+
 const Checkout = () => {
   const { items, clearCart } = useContext(CartContext);
-  const { userProgress, hideModal, showModal, PROGRESS_OPTIONS } =
-    useContext(UserProgressContext);
+  const { userProgress, hideModal } = useContext(UserProgressContext);
   const cartTotal = calculateCartTotal(items);
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
+  const {
+    data,
+    isLoading: isSending,
+    error,
+    sendRequest,
+    clearData,
+  } = useHttp("http://localhost:3000/orders", requestConfig);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    showModal(PROGRESS_OPTIONS["placing-order"]);
     //TODO - CUSTOM VALIDATION
     const orderInfo = items.map((item) => ({
       id: item.id,
@@ -52,28 +67,12 @@ const Checkout = () => {
       customerInfo = { ...customerInfo, [key]: val.value };
     }
 
-    const payload = {
+    await sendRequest({
       order: {
         customer: customerInfo,
         items: orderInfo,
       },
-    };
-
-    const response = await fetch("http://localhost:3000/order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
     });
-
-    if (response.ok) {
-      showModal(PROGRESS_OPTIONS.final);
-      clearCart()
-      setFormData(INITIAL_FORM_DATA)
-    } else {
-      showModal(PROGRESS_OPTIONS.error);
-    }
   };
 
   const handleInputChange = (identifier, val) => {
@@ -89,13 +88,43 @@ const Checkout = () => {
     hideModal();
   };
 
-  const isThisModal = userProgress === "checkout";
+  const handleFinish = () => {
+    clearData()
+    clearCart();
+    //setFormData(INITIAL_FORM_DATA);
+    hideModal();
+  };
+
+  let actions = (
+    <>
+      <Button type="button" textOnly onClick={handleCloseCheckout}>
+        Close
+      </Button>
+      <Button>Submit Order</Button>
+    </>
+  );
+
+  if (isSending) {
+    actions = <span>Sending Order Data...</span>;
+  }
+
+  if (data && !error) {
+    actions = (
+      <Button type="button" onClick={handleCloseCheckout}>
+        Okay
+      </Button>
+    );
+    return (
+      <Modal open={userProgress === "checkout"} onClose={handleFinish}>
+        <h2>Success!</h2>
+        <p>Your order was submitted successfully.</p>
+        <p className="modal-actions">{actions}</p>
+      </Modal>
+    );
+  }
 
   return (
-    <Modal
-      open={isThisModal}
-      onClose={isThisModal ? handleCloseCheckout : null}
-    >
+    <Modal open={userProgress === "checkout"} onClose={handleCloseCheckout}>
       <form onSubmit={handleSubmit} className="control">
         <h2>Checkout</h2>
         <p>Total Amount {currencyFormatting.format(cartTotal)}</p>
@@ -137,12 +166,9 @@ const Checkout = () => {
           />
         </div>
 
-        <p className="modal-actions">
-          <Button type="button" textOnly onClick={handleCloseCheckout}>
-            Close
-          </Button>
-          <Button>Submit Order</Button>
-        </p>
+        {error && <Error title="Failed to submit order" message={error} />}
+
+        <p className="modal-actions">{actions}</p>
       </form>
     </Modal>
   );

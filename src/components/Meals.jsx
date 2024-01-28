@@ -3,8 +3,8 @@ import Meal from "./MealItem";
 import Error from "./Error";
 
 const requestConfig = {
-  method: "GET"
-} // SINO SE RECREA TODO EL TIEMPO Y HAY MIL CALLS AL BE
+  method: "GET",
+}; // SINO SE RECREA TODO EL TIEMPO Y HAY MIL CALLS AL BE
 
 const Meals = () => {
   const {
@@ -12,14 +12,13 @@ const Meals = () => {
     isLoading,
     error,
   } = useHttp("http://localhost:3000/meals", requestConfig, []);
-  console.log("meals", meals);
 
   if (isLoading) {
     return <p className="center">Fetching meals...</p>;
   }
 
   if (error) {
-    return <Error title="Failed to fetch meals" message={error}/>
+    return <Error title="Failed to fetch meals" message={error} />;
   }
   return (
     <section id="meals">
