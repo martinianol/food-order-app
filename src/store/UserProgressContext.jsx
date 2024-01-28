@@ -1,25 +1,31 @@
 import { createContext, useState } from "react";
 
+const PROGRESS_OPTIONS = {
+  cart: "cart",
+  checkout: "checkout",
+  final: "final",
+  "placing-order": "placing-order",
+  error: "error",
+
+}
+
 const UserProgressContext = createContext({
-  progress: null, // "cart" "checkout" "final"
-  showCart: () => {},
-  hideModal: () => {},
+  progress: null, // PROGRESS_OPTIONS
+  showModal: (progress) => {},
+  PROGRESS_OPTIONS
 });
 
 export const UserProgressContextProvider = ({ children }) => {
   const [userProgress, setUserProgress] = useState(null);
 
-  const showCart = () => setUserProgress("cart");
+  const showModal = (progress) => setUserProgress(progress);
   const hideModal = () => setUserProgress(null);
-  const showCheckout = () => setUserProgress("checkout");
-  const showFinal = () => setUserProgress("final");
 
   const userProgressContext = {
     userProgress,
+    showModal,
     hideModal,
-    showCart,
-    showCheckout,
-    showFinal,
+    PROGRESS_OPTIONS
   };
 
   return (
