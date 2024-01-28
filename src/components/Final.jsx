@@ -20,9 +20,11 @@ const Final = () => {
     userProgress === PROGRESS_OPTIONS.error ||
     userProgress === PROGRESS_OPTIONS.final;
 
+    console.log(userProgress)
+
   return (
     <Modal open={isOpen} onClose={hideModal}>
-      <h2>{status}</h2>
+      <h2>{userProgress}</h2>
     </Modal>
   );
 };

@@ -8,7 +8,7 @@ import { currencyFormatting } from "../utils/formatting";
 import { calculateCartTotal } from "../utils/calculateCartTotal";
 
 const INITIAL_FORM_DATA = {
-  fullName: {
+  name: {
     value: "",
     hasBeenEdited: false,
   },
@@ -20,7 +20,7 @@ const INITIAL_FORM_DATA = {
     value: "",
     hasBeenEdited: false,
   },
-  postalCode: {
+  "postal-code": {
     value: "",
     hasBeenEdited: false,
   },
@@ -30,39 +30,51 @@ const INITIAL_FORM_DATA = {
   },
 };
 
-const Checkout = ({ onSubmit }) => {
-  const { items } = useContext(CartContext);
+const Checkout = () => {
+  const { items, clearCart } = useContext(CartContext);
   const { userProgress, hideModal, showModal, PROGRESS_OPTIONS } =
     useContext(UserProgressContext);
   const cartTotal = calculateCartTotal(items);
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    showModal(PROGRESS_OPTIONS["placing-order"]);
     //TODO - CUSTOM VALIDATION
     const orderInfo = items.map((item) => ({
       id: item.id,
       quantity: item.quantity,
     }));
 
+    let customerInfo = {};
+
+    for (const [key, val] of Object.entries(formData)) {
+      customerInfo = { ...customerInfo, [key]: val.value };
+    }
+
     const payload = {
-      customer: formData,
-      order: orderInfo,
+      order: {
+        customer: customerInfo,
+        items: orderInfo,
+      },
     };
 
-    showModal(PROGRESS_OPTIONS["placing-order"])
-    const response = await fetch("http://localhost:3000/orders", {
+    const response = await fetch("http://localhost:3000/order", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(payload),
     });
 
     if (response.ok) {
-      showModal(PROGRESS_OPTIONS.final)
+      showModal(PROGRESS_OPTIONS.final);
+      clearCart()
+      setFormData(INITIAL_FORM_DATA)
     } else {
-      showModal(PROGRESS_OPTIONS.error)
+      showModal(PROGRESS_OPTIONS.error);
     }
   };
-
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
   const handleInputChange = (identifier, val) => {
     setFormData((prevState) => {
@@ -88,7 +100,7 @@ const Checkout = ({ onSubmit }) => {
         <h2>Checkout</h2>
         <p>Total Amount {currencyFormatting.format(cartTotal)}</p>
         <Input
-          id="fullName"
+          id="name"
           label="Full Name"
           type="text"
           required
@@ -110,7 +122,7 @@ const Checkout = ({ onSubmit }) => {
         />
         <div className="control-row">
           <Input
-            id="postalCode"
+            id="postal-code"
             label="Postal Code"
             type="text"
             required
